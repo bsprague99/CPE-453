@@ -1,0 +1,14 @@
+Brenden Sprague
+
+These threads created from my library are classified as user threads, and
+dont have access to OS level operations. OS threads have features like
+synchronization, which my user threads have no synchronization between
+serveral tasks. Also a user level threading lib runs only ina single process.
+One way you could improve the library is add a more advanced scheduling
+algorithm. In a real world application you would want error and exception
+handling to prevent system crashes and ensure better stability.
+
+Instructions:
+
+make fib
+./fib

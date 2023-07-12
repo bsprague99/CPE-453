@@ -1,0 +1,10 @@
+Job   0 -- Turnaround 28.00  Wait 20.00
+Job   1 -- Turnaround 7.00  Wait 5.00
+Job   2 -- Turnaround 13.00  Wait 10.00
+Job   3 -- Turnaround 22.00  Wait 17.00
+Job   4 -- Turnaround 19.00  Wait 15.00
+Job   5 -- Turnaround 24.00  Wait 17.00
+Job   6 -- Turnaround 6.00  Wait 5.00
+Average -- Turnaround 17.00  Wait 12.71
+Scheduled timeline: 
+[0, 0, 0, 1, 2, 3, 4, 5, 0, 1, 2, 3, 4, 5, 6, 0, 2, 3, 4, 5, 0, 3, 4, 5, 0, 3, 5, 0, 5, 5]

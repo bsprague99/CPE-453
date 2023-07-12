@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+
+import argparse
+import timeit
+
+def schedSim(job_file, algorithm, quantum):
+    # Read job file
+    with open(job_file, 'r') as f:
+        jobs = [(int(line.split()[0]), int(line.split()[1])) for line in f.readlines()]
+
+    # Sort jobs based on arrival time
+    jobs.sort(key=lambda job: job[1])
+
+    # Assign job numbers based on arrival time
+    for i in range(len(jobs)):
+        jobs[i] = (i, jobs[i][0], jobs[i][1])
+
+    # FCFS scheduling algorithm
+    if algorithm == 'FIFO':
+        current_time = 0
+        wait_times = []
+        turnaround_times = []
+        for i in range(len(jobs)):
+            job_number, run_time, arrival_time = jobs[i]
+            if current_time < arrival_time:
+                current_time = arrival_time
+            wait_time = current_time - arrival_time
+            wait_times.append(wait_time)
+            current_time += run_time
+            turnaround_time = current_time - arrival_time
+            turnaround_times.append(turnaround_time)
+            print("Job %3d -- Turnaround %3.2f Wait %3.2f" % (job_number, turnaround_time, wait_time))
+        average_wait_time = sum(wait_times) / len(wait_times)
+        average_turnaround_time = sum(turnaround_times) / len(turnaround_times)
+        print("Average -- Turnaround %3.2f Wait %3.2f" % (average_turnaround_time, average_wait_time))
+
+    # RR scheduling algorithm
+    elif algorithm == 'RR':
+
+        if quantum == None:
+            quantum = 1
+
+        n = len(jobs)
+        remaining_burst_time = [job[1] for job in jobs] # initialize remaining burst time for each job
+        waiting_time = [0] * n # initialize waiting time for each job to 0
+        turnaround_time = [0] * n # initialize completion time for each job to 0
+        time = 0 # initialize the simulated time to 0
+        job_queue = [] # initialize the job queue
+        job_index = 0
+
+        for i in range(n):
+            job_queue.append(i)
+
+        while(True):
+
+            done_jobs = 0
+            # check if all jobs are completed then break and finish
+            for remaining_time in remaining_burst_time:
+                if remaining_time == 0:
+                    done_jobs += 1
+            if done_jobs == n:
+                break
+            
+            job_index = job_queue.pop(0)
+        
+            if jobs[job_index][2] <= time:
+                # job has arrived
+                if remaining_burst_time[job_index] > quantum:
+                    remaining_burst_time[job_index] -= quantum
+                    time = time + quantum
+                    job_queue.append(job_index)
+                else:
+                    # if remaining is less than quantum
+                    time = time + remaining_burst_time[job_index]
+                    # job is complete so remaining time is 0
+                    remaining_burst_time[job_index] = 0
+                    waiting_time[job_index] = (time - jobs[job_index][2]) - jobs[job_index][1]
+                    turnaround_time[job_index] = (time - jobs[job_index][2])
+            else:
+                time = time + 1
+                job_queue.append(job_index)
+
+        for i in range(n):
+            print("Job %3d -- Turnaround %3.2f Wait %3.2f" % (i, turnaround_time[i], waiting_time[i]))
+        average_wait_time = sum(waiting_time) / len(waiting_time)
+        average_turnaround_time = sum(turnaround_time) / len(turnaround_time)
+        print("Average -- Turnaround %3.2f Wait %3.2f" % (average_turnaround_time, average_wait_time))
+
+    elif algorithm == 'SRTN': 
+        n = len(jobs)
+        remaining_burst_time = [job[1] for job in jobs]
+        turnaround_time = [0] * n
+        waiting_time = [0] * n
+        current_time = 0
+        total_burst_time = sum(remaining_burst_time)
+        while current_time < total_burst_time:
+            next_job_index = None
+            shortest_burst_time = float('inf')
+            for i in range(n):
+                if jobs[i][0] <= current_time and remaining_burst_time[i] < shortest_burst_time and remaining_burst_time[i] > 0:
+                    shortest_burst_time = remaining_burst_time[i]
+                    next_job_index = i
+            if next_job_index is None:
+                current_time += 1
+                continue
+            remaining_burst_time[next_job_index] -= 1
+            current_time += 1
+            if remaining_burst_time[next_job_index] == 0:
+                turnaround_time[next_job_index] = current_time
+                waiting_time[next_job_index] = current_time - jobs[next_job_index][1] - jobs[next_job_index][0]
+        for i in range(n):
+            print("Job %3d -- Turnaround %3.2f Wait %3.2f" % (i, turnaround_time[i] - jobs[i][0], waiting_time[i]))
+        average_wait_time = sum(waiting_time) / len(waiting_time)
+        average_turnaround_time = sum(turnaround_time) / len(turnaround_time)
+        print("Average -- Turnaround %3.2f Wait %3.2f" % (average_turnaround_time, average_wait_time))
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser()
+
+parser.add_argument('job_file', type=str, help='Path to job file')
+
+# Add optional arguments for algorithm and quantum
+parser.add_argument('-p', '--algorithm', type=str, choices=['FIFO', 'RR', 'SRTN'], default='FIFO', help='The algorithm to use')
+parser.add_argument('-q', '--quantum', type=int, help='The quantum for the round robin algorithm')
+
+args = parser.parse_args()
+
+# Call schedSim function with parsed arguments
+schedSim(args.job_file, args.algorithm, args.quantum)
+

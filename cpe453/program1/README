@@ -1,0 +1,29 @@
+Brenden Sprague
+
+These threads created from my library are classified as user threads, and
+dont have access to OS level operations. OS threads have features like
+synchronization, which my user threads have no synchronization between
+serveral tasks. Also a user level threading lib runs only ina single process.
+One way you could improve the library is add a more advanced scheduling
+algorithm. In a real world application you would want error and exception
+handling to prevent system crashes and ensure better stability.
+
+Instructions:
+
+make fib
+./fib
+
+
+To future students:
+I have two different pieces of advice:
+
+1. With a pen and paper, or an ipad, make sure to write out stack frames,
+as well as the structure of what the inital stack will look like during
+initial stack creation. This will drastically help you when degugging with gdb
+(this leads into my next point)
+
+
+2. This needs to be said, because my go to debugging tool is print("here") as
+im sure is the case for many, but get familiar with gdb. But not just basic gdb
+from prog 0, but look up the gdb command cheatsheet that show memory and stack
+information.

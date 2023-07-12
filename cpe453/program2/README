@@ -1,0 +1,46 @@
+Name: Brenden Sprague (baspragu)
+
+Instructions to run schedSim (example cmds):
+
+./schedSim jobs.txt -p FIFO
+./schedSim jobs.txt -p RR -q 4
+./schedSim jobs.txt -p SRTN
+
+Questions:
+
+1. For what types of workloads does SRTN deliver the same turnaround times as FIFO?
+
+    A: Workloads where all jobs have the same burst time, SRTN will deliver the same turnaround 
+    times as FIFO because there is no advantage to preemption. 
+
+2. For what types of workloads and quantum lengths does SRTN deliver the same
+    response times as RR?
+
+    A: Workloads where yhe burst times of all processes should be shorter than the time quantum used in RR.
+
+3. What happens to response time with SRTN as job lengths increase? Can you use the
+simulator to demonstrate the trend?
+
+    A: As job lengths increase, the response time also increases. 
+
+    input:
+        100 20
+        200 20
+        500 40
+        800 50
+
+    output:
+        Job   0 -- Turnaround 100.00 Wait 0.00
+        Job   1 -- Turnaround 299.00 Wait 99.00
+        Job   2 -- Turnaround 798.00 Wait 298.00
+        Job   3 -- Turnaround 1597.00 Wait 797.00
+        Average -- Turnaround 700.00 Wait 298.50
+
+4. What happens to response time with RR as quantum lengths increase? Can you write
+an equation that gives the worst-case response time, given N jobs?
+
+    A: As quantum length increases, the response time will increase as well. This is because
+    Longer q time means jobs can run for longer without being interrupted.
+    This would look like: response_time = (N - 1) * q
+
+

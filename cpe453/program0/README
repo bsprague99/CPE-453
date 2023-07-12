@@ -1,0 +1,24 @@
+Name: Brenden Sprague
+
+Part 1.
+
+The first value of i is 0 so 0 is the first number that prints in the program. The program enters the while loop and the fork() call is made. Each iteration of the loop a child process is forked off and the parent waits for that child to complete by calling wait(NULL). 
+
+Yes, my understanding has improved. Each iteration of the loop creates a new child process, and since the wait(NULL) function is called right after the fork, the parent process will wait for each child process to terminate before creating the next child process. This means that after the first iteration, there will be 2 processes running (the parent and child). After the second iteration, there will be 3 processes running (the parent and 2 child processes) and so on.
+
+
+
+Part 2
+ 
+Mostly the parent comes first. Interesting how many occurrences there are (500k…)
+
+The fflush really brought down the number of occurrences from sort which is interesting. Im not able to determine exactly why but I believe it has to do with the fact that its clearing out the buffer on the user side.
+
+In this run with the write system call, its clearly filling up the buffer first as its more efficient to write quickly to a large buffer and to output more at once (best guess).
+
+When adding sleep, if the sleep is small enough and the buffer is big enough, the buffer probably won't fill up before the write() call is executed so the data will be buffered normally.  When sleep is long enough, it could fill the buffer before write is called in which the system would have to flush. I think in this case the sleep time is short enough to not have a meaningful effect. It definitely takes much longer to run with a 1 second sleep. Interestingly the occurrences were the same.
+
+Part 3
+
+This looks like the memory organization of the memory that is being used by this process. The structure is denoted on the left by the address/mem location in hex. I noticed it has a few generated but with different permissions, but located in the same dir. I also see its using lib64 which is interesting.
+
